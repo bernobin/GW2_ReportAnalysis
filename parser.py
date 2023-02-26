@@ -143,22 +143,51 @@ def getCCtimers(log):
             id = str(skill['id'])
             if id in ccSkillIDs:
                 ccTimings[name][ccSkillIDs[id]] = [
-                    skill['skills'][i]['castTime']/1000 for i in range(len(skill['skills']))
+                    skill['skills'][i]['castTime'] for i in range(len(skill['skills']))
                 ]
 
     link = data['uploadLinks'][0]
 
-    return link, ccTimings
+    ccStart = [
+        data['targets'][0]['rotation'][3]['skills'][i]['castTime'] for i in range(len(data['targets'][0]['rotation'][3]['skills']))
+    ]
+
+    return link, ccTimings, ccStart
 
 def createCCcsv():
-    for log in os.listdir(logFolder):
-        link, ccTimings = getCCtimers(log)
+    with open('Samarog CC.csv', 'w') as f:
+        header = ['link', 'ccBar', 'Balthazar.9024', 'Demolition Dieter.6952', 'edaquila.8014',
+                  'EstiaStein.7531', 'KarlFranzOtto.7863', 'Nxxb.6820', 'Rosenrot.1293', 'SyNyxthete.2104',
+                  'CineqPl.4126', 'oPeet.1702']
 
-        for player in ccTimings:
-            print(player)
-            for skill in ccTimings[player]:
-                print(skill, '\t', ccTimings[player][skill])
-        print()
+        writer = csv.writer(f)
+        writer.writerow(header)
+
+        for log in os.listdir(logFolder):
+            link, ccTimings, ccStart = getCCtimers(log)
+
+            row = [0]*len(header)
+            row[0] = link
+            for i in range(len(ccStart)):
+                row[1] = 'Breakbar ' + str(i+1)
+
+                for player in ccTimings:
+                    j = header.index(player)
+
+                    firstHit = 60000
+                    for skill in ccTimings[player]:
+                        for cast in range(len(ccTimings[player][skill])):
+                            castTime = ccTimings[player][skill][cast]
+                            if castTime - ccStart[i] > 0 and castTime - ccStart[i] < firstHit:
+                                firstHit = castTime - ccStart[i]
+
+                    row[j] = firstHit
+
+                print(row)
+                writer.writerow(row)
+
+    return 0
+
 
 
 
