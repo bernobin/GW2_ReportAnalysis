@@ -51,7 +51,7 @@ def get_data(log):
 
 
 def createDPScsv():
-    with open('Samarog P1', 'w') as p1, open('Samarog P2', 'w') as p2, open('Samarog P3', 'w') as p3, open('Samarog S1', 'w') as s1, open('Samarog S2', 'w') as s2:
+    with open('Samarog P1.csv', 'w') as p1, open('Samarog P2.csv', 'w') as p2, open('Samarog P3.csv', 'w') as p3, open('Samarog S1.csv', 'w') as s1, open('Samarog S2.csv', 'w') as s2:
         header = ['log', 'phase', 'phase duration', 'Balthazar.9024', 'Demolition Dieter.6952', 'edaquila.8014',
                   'EstiaStein.7531', 'KarlFranzOtto.7863', 'Nxxb.6820', 'Rosenrot.1293', 'SyNyxthete.2104',
                   'CineqPl.4126', 'oPeet.1702']
@@ -94,7 +94,7 @@ def createDPScsv():
 
 
 def createTimercsv():
-    with open('Samarog Timers', 'w') as f:
+    with open('Samarog Timers.csv', 'w') as f:
         writer = csv.writer(f)
 
         header = ['log', 'p1', 's1', 'p2', 's2', 'p3']
@@ -116,7 +116,7 @@ def createTimercsv():
 
 
 # creates Samarog P1, ..., S2 files
-#createDPScsv()
+createDPScsv()
 
 # creates log - phase timers file
 createTimercsv()
