@@ -52,7 +52,7 @@ def get_data(log):
 
 def createDPScsv():
     with open('Samarog P1.csv', 'w') as p1, open('Samarog P2.csv', 'w') as p2, open('Samarog P3.csv', 'w') as p3, open('Samarog S1.csv', 'w') as s1, open('Samarog S2.csv', 'w') as s2:
-        header = ['log', 'phase', 'phase duration', 'Balthazar.9024', 'Demolition Dieter.6952', 'edaquila.8014',
+        header = ['log', 'phase', 'timer', 'Balthazar.9024', 'Demolition Dieter.6952', 'edaquila.8014',
                   'EstiaStein.7531', 'KarlFranzOtto.7863', 'Nxxb.6820', 'Rosenrot.1293', 'SyNyxthete.2104',
                   'CineqPl.4126', 'oPeet.1702']
 
