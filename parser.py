@@ -41,43 +41,82 @@ def get_data(log):
 
             playerDPS[phaseDict['name']] = {}
             for playerDict in data['players']:
-                playerDPS[phaseDict['name']][playerDict['account']] = playerDict['dpsTargets'][0][phaseIndex]['dps']
-#                    [playerDict['dpsTargets'][j][phaseIndex]['dps'] for j in range(len(playerDict['dpsTargets']))]
+                playerDPS[phaseDict['name']][playerDict['account']] = [
+                    playerDict['dpsTargets'][j][phaseIndex]['dps'] for j in range(len(playerDict['dpsTargets']))
+                ]
 
     link = data['uploadLinks'][0]
 
     return link, timers, playerDPS
 
 
-def main():
-    with open('samarog_sheet.csv', 'w', encoding='UTF8') as f:
+def createDPScsv():
+    with open('Samarog P1', 'w') as p1, open('Samarog P2', 'w') as p2, open('Samarog P3', 'w') as p3, open('Samarog S1', 'w') as s1, open('Samarog S2', 'w') as s2:
         header = ['log', 'phase', 'phase duration', 'Balthazar.9024', 'Demolition Dieter.6952', 'edaquila.8014',
                   'EstiaStein.7531', 'KarlFranzOtto.7863', 'Nxxb.6820', 'Rosenrot.1293', 'SyNyxthete.2104',
                   'CineqPl.4126', 'oPeet.1702']
 
+        writers = {
+            'Phase 1':  csv.writer(p1),
+            'Split 1':  csv.writer(s1),
+            'Phase 2':  csv.writer(p2),
+            'Split 2':  csv.writer(s2),
+            'Phase 3':  csv.writer(p3)
+        }
+
+        for w in writers:
+            writers[w].writerow(header)
+
+        for log in os.listdir(logFolder):
+            link, timers, playerDPS = get_data(log)
+
+            for phase in timers:
+                row = [0]*len(header)
+                row[0] = link
+                row[1] = phase
+                row[2] = timers[phase]
+
+                if phase == 'Split 1':
+                    j = 2
+                elif phase == 'Split 2':
+                    j = 4
+                else:
+                    j = 0
+                for player in playerDPS[phase]:
+                    i = header.index(player)
+                    row[i] = playerDPS[phase][player][j]
+
+                if phase in writers:
+                    writers[phase].writerow(row)
+
+                print(row)
+    return 0
+
+
+def createTimercsv():
+    with open('Samarog Timers', 'w') as f:
         writer = csv.writer(f)
+
+        header = ['log', 'p1', 's1', 'p2', 's2', 'p3']
+
         writer.writerow(header)
 
         for log in os.listdir(logFolder):
             link, timers, playerDPS = get_data(log)
 
+            timers.pop('Full Fight', 'not found')
 
-            timers2 = {}
-            if 'Phase 1' in timers:
-                timers2['Phase 1'] = timers['Phase 1']
-            for phase in timers2:
-                row = [0]*len(header)
-                row[0] = link
-                row[1] = phase
-                row[2] = timers[phase]
-                # how do we sort these
-                for player in playerDPS[phase]:
-                    i = header.index(player)
-                    row[i] = playerDPS[phase][player]
+            row = [link]
+            for phase in timers:
+                row.append(timers[phase])
 
-                writer.writerow(row)
-                print(row)
+            writer.writerow(row)
+
+    return 0
 
 
+# creates Samarog P1, ..., S2 files
+#createDPScsv()
 
-main()
+# creates log - phase timers file
+createTimercsv()
