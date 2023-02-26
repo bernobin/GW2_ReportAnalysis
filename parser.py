@@ -3,7 +3,20 @@ import pathlib
 import os
 import csv
 
+# log folder
 logFolder = pathlib.Path("./reports")
+
+# skill id's
+ccSkillIDs = {
+    '14511':    'Backbreaker',
+    '14359':    'Staggering Blow',
+    '14516':    'Bulls Charge',
+    '44937':    'Disrupting Stab'
+}
+backbreaker = 14511
+staggering_blow = 14359
+bulls_charge = 14516
+disrupting_stab = 44937
 
 
 def get_data(log):
@@ -115,8 +128,46 @@ def createTimercsv():
     return 0
 
 
+def getCCtimers(log):
+    file = pathlib.Path(logFolder / log)
+
+    text = open(file)
+    data = json.load(text)
+
+    ccTimings = {}
+    for player in data['players']:
+        name = player['account']
+        ccTimings[name] = {}
+
+        for skill in player['rotation']:
+            id = str(skill['id'])
+            if id in ccSkillIDs:
+                ccTimings[name][ccSkillIDs[id]] = [
+                    skill['skills'][i]['castTime']/1000 for i in range(len(skill['skills']))
+                ]
+
+    link = data['uploadLinks'][0]
+
+    return link, ccTimings
+
+def createCCcsv():
+    for log in os.listdir(logFolder):
+        link, ccTimings = getCCtimers(log)
+
+        for player in ccTimings:
+            print(player)
+            for skill in ccTimings[player]:
+                print(skill, '\t', ccTimings[player][skill])
+        print()
+
+
+
+
 # creates Samarog P1, ..., S2 files
-createDPScsv()
+#createDPScsv()
 
 # creates log - phase timers file
-createTimercsv()
+#createTimercsv()
+
+# creates cc csv
+createCCcsv()
