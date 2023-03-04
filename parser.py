@@ -64,7 +64,9 @@ def get_data(log):
 
 
 def createDPScsv():
-    with open('Samarog P1.csv', 'w') as p1, open('Samarog P2.csv', 'w') as p2, open('Samarog P3.csv', 'w') as p3, open('Samarog S1.csv', 'w') as s1, open('Samarog S2.csv', 'w') as s2:
+    with open('csvFiles/Samarog P1.csv', 'w') as p1, open('csvFiles/Samarog P2.csv', 'w') as p2, open(
+            'csvFiles/Samarog P3.csv', 'w') as p3, open('csvFiles/Samarog S1.csv', 'w') as s1, open(
+            'csvFiles/Samarog S2.csv', 'w') as s2:
         header = ['log', 'phase', 'timer', 'Balthazar.9024', 'Demolition Dieter.6952', 'edaquila.8014',
                   'EstiaStein.7531', 'KarlFranzOtto.7863', 'Nxxb.6820', 'Rosenrot.1293', 'SyNyxthete.2104',
                   'CineqPl.4126', 'oPeet.1702']
@@ -107,7 +109,7 @@ def createDPScsv():
 
 
 def createTimercsv():
-    with open('Samarog Timers.csv', 'w') as f:
+    with open('csvFiles/Samarog Timers.csv', 'w') as f:
         writer = csv.writer(f)
 
         header = ['log', 'p1', 's1', 'p2', 's2', 'p3']
@@ -159,7 +161,7 @@ def getCCtimers(log):
     return link, ccTimings, ccStart
 
 def createCCcsv():
-    with open('Samarog CC.csv', 'w') as f:
+    with open('csvFiles/Samarog CC.csv', 'w') as f:
         header = ['link', 'ccBar', 'Balthazar.9024', 'Demolition Dieter.6952', 'edaquila.8014',
                   'EstiaStein.7531', 'KarlFranzOtto.7863', 'Nxxb.6820', 'Rosenrot.1293', 'SyNyxthete.2104',
                   'CineqPl.4126', 'oPeet.1702']
