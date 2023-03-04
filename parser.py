@@ -143,14 +143,18 @@ def getCCtimers(log):
             id = str(skill['id'])
             if id in ccSkillIDs:
                 ccTimings[name][ccSkillIDs[id]] = [
-                    skill['skills'][i]['castTime'] for i in range(len(skill['skills']))
+                    skill['skills'][i]['castTime'] + skill['skills'][i]['duration'] for i in range(len(skill['skills']))
                 ]
 
     link = data['uploadLinks'][0]
 
-    ccStart = [
-        data['targets'][0]['rotation'][3]['skills'][i]['castTime'] for i in range(len(data['targets'][0]['rotation'][3]['skills']))
-    ]
+    if len(data['targets'][0]['rotation']) > 3:
+        samaJump = data['targets'][0]['rotation'][3]
+        ccStart = [
+            samaJump['skills'][i]['castTime'] + samaJump['skills'][i]['duration'] for i in range(len(data['targets'][0]['rotation'][3]['skills']))
+        ]
+    else:
+        ccStart = []
 
     return link, ccTimings, ccStart
 
@@ -166,7 +170,7 @@ def createCCcsv():
         for log in os.listdir(logFolder):
             link, ccTimings, ccStart = getCCtimers(log)
 
-            row = [0]*len(header)
+            row = ['']*len(header)
             row[0] = link
             for i in range(len(ccStart)):
                 row[1] = 'Breakbar ' + str(i+1)
@@ -174,14 +178,15 @@ def createCCcsv():
                 for player in ccTimings:
                     j = header.index(player)
 
-                    firstHit = 60000
+                    firstHit = 4000
                     for skill in ccTimings[player]:
                         for cast in range(len(ccTimings[player][skill])):
                             castTime = ccTimings[player][skill][cast]
-                            if castTime - ccStart[i] > 0 and castTime - ccStart[i] < firstHit:
+                            if castTime - ccStart[i] > -1000 and castTime - ccStart[i] < firstHit:
                                 firstHit = castTime - ccStart[i]
 
-                    row[j] = firstHit
+                    if firstHit < 4000:
+                        row[j] = firstHit
 
                 print(row)
                 writer.writerow(row)
@@ -193,10 +198,10 @@ def createCCcsv():
 
 
 # creates Samarog P1, ..., S2 files
-#createDPScsv()
+createDPScsv()
 
 # creates log - phase timers file
-#createTimercsv()
+createTimercsv()
 
 # creates cc csv
 createCCcsv()
